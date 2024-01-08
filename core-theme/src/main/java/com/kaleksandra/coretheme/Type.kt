@@ -14,8 +14,14 @@ private val Montserrat = FontFamily(
     Font(R.font.montserrat_medium, FontWeight.W500)
 )
 
+private val OpenSans = FontFamily(
+    Font(R.font.open_sans_regular),
+    Font(R.font.open_sans_medium, FontWeight.Medium),
+    Font(R.font.open_sans_bold, FontWeight.Bold)
+)
+
 val defaultTextStyle = TextStyle(
-    fontFamily = Montserrat, lineHeightStyle = LineHeightStyle(
+    fontFamily = OpenSans, lineHeightStyle = LineHeightStyle(
         alignment = LineHeightStyle.Alignment.Center, trim = LineHeightStyle.Trim.None
     )
 )
@@ -59,7 +65,7 @@ val AppTypography = Typography(
         fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp, fontWeight = FontWeight.Medium
     ),
     labelMedium = defaultTextStyle.copy(
-        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp, fontWeight = FontWeight.Medium
+        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp, fontWeight = FontWeight.Bold
     ),
     labelSmall = defaultTextStyle.copy(
         fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp, fontWeight = FontWeight.Medium

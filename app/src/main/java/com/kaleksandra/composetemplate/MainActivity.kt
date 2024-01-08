@@ -9,12 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.kaleksandra.corenavigation.BottomBar
-import com.kaleksandra.corenavigation.Screen
+import com.kaleksandra.collector.presentation.CollectionScreen
 import com.kaleksandra.coretheme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 Scaffold {
-                    Main()
+                    CollectionScreen()
                 }
             }
         }

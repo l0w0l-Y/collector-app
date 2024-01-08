@@ -26,7 +26,7 @@ dependencies {
     implementation(loggingInterceptor)
 
     implementation(hiltDep)
-    implementation(hiltKapt)
+    kapt(hiltKapt)
 
     implementation(serialization)
     implementation(dataStore)

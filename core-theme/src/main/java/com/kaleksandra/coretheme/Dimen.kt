@@ -46,6 +46,7 @@ object Dimen {
 
     val radius_4 = 4.dp
     val radius_8 = 8.dp
+    val radius_10 = 10.dp
     val radius_12 = 12.dp
     val radius_16 = 16.dp
     val radius_20 = 20.dp
