@@ -5,6 +5,7 @@ import com.kaleksandra.coredata.network.Effect
 import com.kaleksandra.coredata.network.api.CollectionApi
 import com.kaleksandra.coredata.network.call
 import com.kaleksandra.coredata.network.di.IoDispatcher
+import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.toCompletable
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,6 +15,7 @@ interface CollectionRepository {
     suspend fun getCollection(id: Long): Effect<CollectionResponse>
     suspend fun getAllCollection(): Effect<List<CollectionResponse>>
     suspend fun addCardInCollection(cardId: Long): Effect<Completable>
+    suspend fun addCollection(collection: CollectionDto): Effect<Long>
 }
 
 class CollectionRepositoryImpl @Inject constructor(
@@ -30,5 +32,9 @@ class CollectionRepositoryImpl @Inject constructor(
 
     override suspend fun addCardInCollection(cardId: Long): Effect<Completable> {
         return call(dispatcher) { api.addCardInCollection(cardId) }.toCompletable()
+    }
+
+    override suspend fun addCollection(collection: CollectionDto): Effect<Long> {
+        return call(dispatcher) { api.addCollection(collection) }
     }
 }

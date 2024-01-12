@@ -1,22 +1,11 @@
-package com.kaleksandra.collector.presentation
+package com.kaleksandra.collector.presentation.collection
 
 import android.content.res.Configuration
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.EaseInBack
-import androidx.compose.animation.core.EaseInBounce
-import androidx.compose.animation.core.EaseInElastic
 import androidx.compose.animation.core.EaseInOutBack
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -32,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -42,10 +30,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -64,8 +55,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.translationMatrix
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.kaleksandra.collector.R
 import com.kaleksandra.coredata.network.models.CollectionItem
@@ -73,12 +64,16 @@ import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coretheme.Dimen
 
 @Composable
-fun CollectionScreen(viewModel: CollectionViewModel = hiltViewModel()) {
+fun CollectionScreen(
+    navController: NavController,
+    viewModel: CollectionViewModel = hiltViewModel(),
+) {
     val collections by viewModel.collectionsState.collectAsState()
     CollectionScreen(
         collections,
         {},
         viewModel::onAddCardInCollection,
+        viewModel::onAddCollection,
     )
 }
 
@@ -88,6 +83,7 @@ fun CollectionScreen(
     collections: List<CollectionResponse>,
     onCardClick: (Long) -> Unit,
     onAddCardInCollection: (Long) -> Unit,
+    onAddCollection: () -> Unit,
 ) {
     var selectedCollection by remember { mutableIntStateOf(0) }
     Row {
@@ -108,41 +104,45 @@ fun CollectionScreen(
                 items(collections[selectedCollection].list) {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.combinedClickable(
-                            onClick = { onCardClick(it.id) },
-                            onLongClick = { onAddCardInCollection(it.id) },
-                        )
                     ) {
                         var isLoading by remember { mutableStateOf(false) }
-                        AsyncImage(
-                            model = it.link,
-                            contentDescription = null,
-                            contentScale = ContentScale.FillWidth,
-                            colorFilter = if (!it.inCollection) {
-                                ColorFilter.tint(
-                                    color = Color(0xBF06010B),
-                                    blendMode = BlendMode.Darken
-                                )
-                            } else {
-                                null
-                            },
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(Dimen.radius_10))
-                                .fillMaxSize(),
-                            onLoading = {
-                                isLoading = true
-                            },
-                            onSuccess = {
-                                isLoading = false
-                            },
-                            onError = {
-                                isLoading = false
-                            }
-                        )
+                        Column {
+                            AsyncImage(model = it.link,
+                                contentDescription = null,
+                                contentScale = ContentScale.FillWidth,
+                                colorFilter = if (!it.inCollection) {
+                                    ColorFilter.tint(
+                                        color = Color(0xBF06010B), blendMode = BlendMode.Darken
+                                    )
+                                } else {
+                                    null
+                                },
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(Dimen.radius_10))
+                                    .fillMaxSize()
+                                    .combinedClickable(
+                                        onClick = { onCardClick(it.id) },
+                                        onLongClick = { onAddCardInCollection(it.id) },
+                                    ),
+                                onLoading = {
+                                    isLoading = true
+                                },
+                                onSuccess = {
+                                    isLoading = false
+                                },
+                                onError = {
+                                    isLoading = false
+                                })
+                            Text(
+                                text = it.name,
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.padding(top = Dimen.padding_4)
+                            )
+                        }
                         if (isLoading) {
                             LoadingAnimation(
                                 Modifier
-                                    .height(280.dp)
+                                    .height(200.dp)
                                     .fillMaxWidth()
                             )
                         }
@@ -150,32 +150,33 @@ fun CollectionScreen(
                 }
             }
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(60.dp),
-            verticalArrangement = Arrangement.spacedBy(Dimen.padding_16),
-        ) {
-            items(collections) {
-                Column(
-                    modifier = Modifier
+        Column(modifier = Modifier.width(60.dp)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Dimen.padding_16),
+            ) {
+                items(collections) {
+                    Column(modifier = Modifier
                         .clickable {
                             selectedCollection = collections.indexOf(it)
                         }
                         .padding(
-                            vertical = Dimen.padding_12,
-                            horizontal = Dimen.padding_8
+                            vertical = Dimen.padding_12, horizontal = Dimen.padding_8
+                        )) {
+                        Text(
+                            text = it.title, style = MaterialTheme.typography.labelMedium
                         )
-                ) {
-                    Text(
-                        text = it.title,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    Text(
-                        text = "${it.cardInCollection} / ${it.cards}",
-                        style = MaterialTheme.typography.labelMedium
-                    )
+                        Text(
+                            text = "${it.cardInCollection} / ${it.cards}",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 }
+            }
+            IconButton(
+                onClick = onAddCollection, modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = null)
             }
         }
     }
@@ -185,17 +186,15 @@ fun CollectionScreen(
 fun LoadingAnimation(modifier: Modifier = Modifier, size: Dp = 60.dp) {
     val infiniteTransition = rememberInfiniteTransition("RotationTransition")
     val rotation by infiniteTransition.animateFloat(
-        initialValue = -20f,
-        targetValue = 20f,
-        animationSpec = infiniteRepeatable(
+        initialValue = -20f, targetValue = 20f, animationSpec = infiniteRepeatable(
             animation = tween(600, easing = EaseInOutBack),
             repeatMode = RepeatMode.Reverse,
-        ),
-        label = "RotationCompletion"
+        ), label = "RotationCompletion"
     )
     Box(
-        modifier = modifier.background(Color(0xFFF5F5F5)),
-        contentAlignment = Alignment.Center
+        modifier = modifier.background(
+            Color(0xFFF5F5F5), RoundedCornerShape(Dimen.padding_20)
+        ), contentAlignment = Alignment.Center
     ) {
         Image(
             modifier = Modifier

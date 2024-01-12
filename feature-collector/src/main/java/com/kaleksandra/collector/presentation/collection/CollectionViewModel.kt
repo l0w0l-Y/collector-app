@@ -1,4 +1,4 @@
-package com.kaleksandra.collector.presentation
+package com.kaleksandra.collector.presentation.collection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,13 +45,19 @@ class CollectionViewModel @Inject constructor(
                 _collectionState.update { currentState ->
                     currentState.map { collection ->
                         if (cardId in collection.list.map { it.id }) {
+                            var inCollection = false
                             collection.copy(
                                 list = collection.list.map {
                                     if (it.id == cardId) {
+                                        inCollection = !it.inCollection
                                         it.copy(inCollection = !it.inCollection)
                                     } else {
                                         it
                                     }
+                                }, cardInCollection = if (inCollection) {
+                                    collection.cardInCollection + 1
+                                } else {
+                                    collection.cardInCollection - 1
                                 }
                             )
                         } else {
@@ -61,5 +67,9 @@ class CollectionViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onAddCollection() {
+
     }
 }
