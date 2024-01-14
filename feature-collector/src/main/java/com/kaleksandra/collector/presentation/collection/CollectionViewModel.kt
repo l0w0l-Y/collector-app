@@ -68,8 +68,4 @@ class CollectionViewModel @Inject constructor(
             }
         }
     }
-
-    fun onAddCollection() {
-
-    }
 }

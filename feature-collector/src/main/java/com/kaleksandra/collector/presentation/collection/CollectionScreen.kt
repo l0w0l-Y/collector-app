@@ -61,6 +61,8 @@ import coil.compose.AsyncImage
 import com.kaleksandra.collector.R
 import com.kaleksandra.coredata.network.models.CollectionItem
 import com.kaleksandra.coredata.network.models.CollectionResponse
+import com.kaleksandra.corenavigation.AddCollectionDirection
+import com.kaleksandra.corenavigation.navigate
 import com.kaleksandra.coretheme.Dimen
 
 @Composable
@@ -73,7 +75,7 @@ fun CollectionScreen(
         collections,
         {},
         viewModel::onAddCardInCollection,
-        viewModel::onAddCollection,
+        { navController.navigate(AddCollectionDirection) },
     )
 }
 

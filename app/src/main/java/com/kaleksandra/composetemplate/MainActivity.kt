@@ -10,13 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.kaleksandra.collector.presentation.add.AddCollectionScreen
+import com.kaleksandra.collector.presentation.create.CreateCollectionScreen
 import com.kaleksandra.collector.presentation.collection.CollectionScreen
 import com.kaleksandra.corenavigation.AddCollectionDirection
 import com.kaleksandra.corenavigation.CollectionDirection
@@ -40,7 +38,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = CollectionDirection.path
                     ) {
                         composable(CollectionDirection.path) { CollectionScreen(navController = navController) }
-                        composable(AddCollectionDirection.path) { AddCollectionScreen(navController = navController) }
+                        composable(AddCollectionDirection.path) { CreateCollectionScreen(navController = navController) }
                     }
                 }
             }

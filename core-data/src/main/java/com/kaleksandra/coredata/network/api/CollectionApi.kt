@@ -2,6 +2,7 @@ package com.kaleksandra.coredata.network.api
 
 import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
+import com.kaleksandra.coredata.network.models.GroupResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -18,6 +19,8 @@ interface CollectionApi {
     @POST("collection/card/{cardId}")
     suspend fun addCardInCollection(@Path("cardId") cardId: Long): Response<Unit>
 
-    @POST("/")
-    suspend fun addCollection(@Body collection: CollectionDto): Response<Long>
+    @POST("collection/")
+    suspend fun createCollection(@Body collection: CollectionDto): Response<Long>
+    @GET("collection/groups")
+    suspend fun getAllGroups() : Response<List<GroupResponse>>
 }
