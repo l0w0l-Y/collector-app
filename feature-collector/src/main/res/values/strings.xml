@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_create_collection">Создать</string>
+    <string name="text_field_title_collection">Название</string>
+    <string name="text_field_placeholder_collection">Альбом 5-STAR, 2023г.</string>
+    <string name="text_field_title_group">Группа</string>
+    <string name="text_field_placeholder_group">BTS</string>
+    <string name="top_bar_create_collection">Новая коллекция</string>
 </resources>

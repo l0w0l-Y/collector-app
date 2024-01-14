@@ -53,7 +53,7 @@ val AppTypography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
     ),
     titleSmall = defaultTextStyle.copy(
         fontSize = 14.sp,
@@ -61,7 +61,8 @@ val AppTypography = Typography(
         letterSpacing = 0.1.sp,
         fontWeight = FontWeight.Medium,
     ),
-    labelLarge = defaultTextStyle.copy(
+    labelLarge =
+    defaultTextStyle.copy(
         fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp, fontWeight = FontWeight.Medium
     ),
     labelMedium = defaultTextStyle.copy(

@@ -3,11 +3,13 @@ package com.kaleksandra.coredata.network.api
 import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
+import com.kaleksandra.coredata.network.models.MemberResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CollectionApi {
     @GET("collection/{id}")
@@ -21,6 +23,10 @@ interface CollectionApi {
 
     @POST("collection/")
     suspend fun createCollection(@Body collection: CollectionDto): Response<Long>
+
     @GET("collection/groups")
-    suspend fun getAllGroups() : Response<List<GroupResponse>>
+    suspend fun getAllGroups(@Query("query") query: String): Response<List<GroupResponse>>
+
+    @GET("collection/groups/{id}")
+    suspend fun getAllMembersGroup(@Path("id") id: Long): Response<List<MemberResponse>>
 }

@@ -5,6 +5,7 @@ import com.kaleksandra.coredata.network.Effect
 import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
+import com.kaleksandra.coredata.network.models.MemberResponse
 import com.kaleksandra.coredata.network.repository.CollectionRepository
 import javax.inject.Inject
 
@@ -27,8 +28,12 @@ class CollectionInteractorImpl @Inject constructor(
         return repository.createCollection(collection)
     }
 
-    override suspend fun getAllGroups(): Effect<List<GroupResponse>> {
-        return repository.getAllGroups()
+    override suspend fun getGroups(query: String): Effect<List<GroupResponse>> {
+        return repository.getGroups(query)
+    }
+
+    override suspend fun getAllMembersGroup(id: Long): Effect<List<MemberResponse>> {
+        return repository.getAllMembersGroup(id)
     }
 }
 
@@ -37,6 +42,7 @@ interface CollectionInteractor {
     suspend fun getAllCollection(): Effect<List<CollectionResponse>>
     suspend fun addCardInCollection(cardId: Long): Effect<Completable>
     suspend fun createCollection(collection: CollectionDto): Effect<Long>
-    suspend fun getAllGroups(): Effect<List<GroupResponse>>
+    suspend fun getGroups(query: String): Effect<List<GroupResponse>>
+    suspend fun getAllMembersGroup(id: Long): Effect<List<MemberResponse>>
 }
 

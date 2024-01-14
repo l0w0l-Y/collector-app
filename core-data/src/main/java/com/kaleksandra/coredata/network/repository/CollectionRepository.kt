@@ -8,6 +8,7 @@ import com.kaleksandra.coredata.network.di.IoDispatcher
 import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
+import com.kaleksandra.coredata.network.models.MemberResponse
 import com.kaleksandra.coredata.network.toCompletable
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -17,7 +18,8 @@ interface CollectionRepository {
     suspend fun getAllCollection(): Effect<List<CollectionResponse>>
     suspend fun addCardInCollection(cardId: Long): Effect<Completable>
     suspend fun createCollection(collection: CollectionDto): Effect<Long>
-    suspend fun getAllGroups(): Effect<List<GroupResponse>>
+    suspend fun getGroups(query: String): Effect<List<GroupResponse>>
+    suspend fun getAllMembersGroup(id:Long): Effect<List<MemberResponse>>
 }
 
 class CollectionRepositoryImpl @Inject constructor(
@@ -40,7 +42,11 @@ class CollectionRepositoryImpl @Inject constructor(
         return call(dispatcher) { api.createCollection(collection) }
     }
 
-    override suspend fun getAllGroups(): Effect<List<GroupResponse>> {
-        return call(dispatcher) { api.getAllGroups() }
+    override suspend fun getGroups(query: String): Effect<List<GroupResponse>> {
+        return call(dispatcher) { api.getAllGroups(query) }
+    }
+
+    override suspend fun getAllMembersGroup(id:Long): Effect<List<MemberResponse>> {
+        return call(dispatcher) { api.getAllMembersGroup(id) }
     }
 }
