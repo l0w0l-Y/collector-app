@@ -2,11 +2,13 @@ package com.kaleksandra.collector.domain
 
 import com.kaleksandra.coredata.network.Completable
 import com.kaleksandra.coredata.network.Effect
+import com.kaleksandra.coredata.network.models.CardCollectionDto
 import com.kaleksandra.coredata.network.models.CollectionDto
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
 import com.kaleksandra.coredata.network.models.MemberResponse
 import com.kaleksandra.coredata.network.repository.CollectionRepository
+import java.io.File
 import javax.inject.Inject
 
 class CollectionInteractorImpl @Inject constructor(
@@ -35,6 +37,14 @@ class CollectionInteractorImpl @Inject constructor(
     override suspend fun getAllMembersGroup(id: Long): Effect<List<MemberResponse>> {
         return repository.getAllMembersGroup(id)
     }
+
+    override suspend fun uploadImage(file: File, id: Long): Effect<Long> {
+        return repository.uploadImage(file, id)
+    }
+
+    override suspend fun setCardCollection(cardId: Long, collectionId: Long): Effect<Unit> {
+        return repository.setCardCollection(CardCollectionDto(cardId, collectionId))
+    }
 }
 
 interface CollectionInteractor {
@@ -44,5 +54,7 @@ interface CollectionInteractor {
     suspend fun createCollection(collection: CollectionDto): Effect<Long>
     suspend fun getGroups(query: String): Effect<List<GroupResponse>>
     suspend fun getAllMembersGroup(id: Long): Effect<List<MemberResponse>>
+    suspend fun uploadImage(file: File, id: Long): Effect<Long>
+    suspend fun setCardCollection(cardId: Long, collectionId: Long): Effect<Unit>
 }
 

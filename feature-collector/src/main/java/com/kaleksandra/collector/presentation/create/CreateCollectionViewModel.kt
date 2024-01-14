@@ -1,5 +1,7 @@
 package com.kaleksandra.collector.presentation.create
 
+import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaleksandra.collector.domain.CollectionInteractor
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 private const val DEFAULT_DEBOUNCE_DELAY: Long = 300L
@@ -27,7 +30,8 @@ private const val DEFAULT_DEBOUNCE_DELAY: Long = 300L
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class CreateCollectionViewModel @Inject constructor(
-    private val interactor: CollectionInteractor
+    private val interactor: CollectionInteractor,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private var _groupState = MutableStateFlow<List<GroupResponse>>(emptyList())
     val groupState: StateFlow<List<GroupResponse>> = _groupState
@@ -54,21 +58,34 @@ class CreateCollectionViewModel @Inject constructor(
         }
     }
 
-    fun createCollection(title: String, groupId: Long) {
-        viewModelScope.launch {
-            interactor.createCollection(
-                CollectionDto(title, groupId)
-            ).doOnSuccess {
-                _eventChannel.send(OnCreateCollectionEvent)
-            }
-        }
-    }
-
     fun getAllMembersGroup(id: Long) {
         viewModelScope.launch {
             interactor.getAllMembersGroup(id).doOnSuccess {
                 _membersState.emit(it)
             }
+        }
+    }
+
+    fun sendCollection(uris: Map<Long, Uri>, title: String, groupId: Long) {
+        viewModelScope.launch {
+            interactor.createCollection(CollectionDto(title, groupId)).doOnSuccess {
+                savePhotos(uris, it)
+            }
+        }
+    }
+
+    fun savePhotos(uris: Map<Long, Uri>, collectionId: Long) {
+        viewModelScope.launch {
+            uris.forEach {
+                it.value.path?.let { uri ->
+                    interactor.uploadImage(
+                        File(uri), it.key
+                    ).doOnSuccess { cardId ->
+                        interactor.setCardCollection(cardId, collectionId)
+                    }
+                }
+            }
+            _eventChannel.send(OnCreateCollectionEvent)
         }
     }
 

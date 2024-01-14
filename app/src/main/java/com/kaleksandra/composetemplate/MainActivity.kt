@@ -14,10 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.kaleksandra.collector.presentation.create.CreateCollectionScreen
 import com.kaleksandra.collector.presentation.collection.CollectionScreen
-import com.kaleksandra.corenavigation.AddCollectionDirection
+import com.kaleksandra.collector.presentation.create.CreateCollectionScreen
 import com.kaleksandra.corenavigation.CollectionDirection
+import com.kaleksandra.corenavigation.CreateCollectionDirection
 import com.kaleksandra.coretheme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,8 +37,14 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = CollectionDirection.path
                     ) {
-                        composable(CollectionDirection.path) { CollectionScreen(navController = navController) }
-                        composable(AddCollectionDirection.path) { CreateCollectionScreen(navController = navController) }
+                        composable(CollectionDirection.path) {
+                            CollectionScreen(navController = navController)
+                        }
+                        composable(CreateCollectionDirection.path) {
+                            CreateCollectionScreen(
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }

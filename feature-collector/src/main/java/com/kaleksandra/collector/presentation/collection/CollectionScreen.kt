@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,7 +65,7 @@ import com.kaleksandra.collector.presentation.collection.model.LoadingState
 import com.kaleksandra.collector.presentation.collection.model.Success
 import com.kaleksandra.coredata.network.models.CollectionItem
 import com.kaleksandra.coredata.network.models.CollectionResponse
-import com.kaleksandra.corenavigation.AddCollectionDirection
+import com.kaleksandra.corenavigation.CreateCollectionDirection
 import com.kaleksandra.corenavigation.navigate
 import com.kaleksandra.coretheme.Dimen
 import com.kaleksandra.coreui.compose.painter
@@ -83,7 +82,7 @@ fun CollectionScreen(
         loadingState,
         {},
         viewModel::onAddCardInCollection,
-        { navController.navigate(AddCollectionDirection) },
+        { navController.navigate(CreateCollectionDirection) },
     )
 }
 
