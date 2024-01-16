@@ -19,6 +19,7 @@ object Dimen {
     val padding_32 = 32.dp
     val padding_36 = 36.dp
     val padding_40 = 40.dp
+    val padding_60 = 60.dp
 
     val width_0 = 0.dp
     val width_4 = 4.dp

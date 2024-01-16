@@ -148,20 +148,21 @@ fun CollectionScreen(
                                     onError = {
                                         isLoading = false
                                     })
+                                if (isLoading) {
+                                    LoadingAnimation(
+                                        Modifier
+                                            .height(200.dp)
+                                            .fillMaxWidth()
+                                            .background(
+                                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                                RoundedCornerShape(Dimen.padding_20)
+                                            )
+                                    )
+                                }
                                 Text(
-                                    text = it.name,
+                                    text = it.memberName,
                                     style = MaterialTheme.typography.labelMedium,
                                     modifier = Modifier.padding(top = Dimen.padding_4)
-                                )
-                            }
-                            if (isLoading) {
-                                LoadingAnimation(
-                                    Modifier
-                                        .height(200.dp)
-                                        .fillMaxWidth()
-                                        .background(
-                                            Color(0xFFF5F5F5), RoundedCornerShape(Dimen.padding_20)
-                                        )
                                 )
                             }
                         }

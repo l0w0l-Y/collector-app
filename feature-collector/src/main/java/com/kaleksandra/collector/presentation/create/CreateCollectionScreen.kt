@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -49,6 +50,8 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -264,26 +267,34 @@ fun CreateCollectionScreen(
                         LazyVerticalGrid(
                             modifier = Modifier.fillMaxSize(),
                             columns = GridCells.Fixed(2),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(Dimen.padding_16),
+                            horizontalArrangement = Arrangement.spacedBy(Dimen.padding_8),
                             contentPadding = PaddingValues(
-                                horizontal = Dimen.padding_20,
-                                vertical = Dimen.padding_20,
+                                start = Dimen.padding_16,
+                                end = Dimen.padding_16,
+                                top = Dimen.padding_4,
+                                bottom = Dimen.padding_60
                             )
                         ) {
                             itemsIndexed(members) { index, item ->
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(Dimen.padding_12)
+                                    verticalArrangement = Arrangement.spacedBy(Dimen.padding_8),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
+                                    val isPhotoTaken = uris.contains(item.id)
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                                if (!isPhotoTaken) {
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                } else {
+                                                    Color.Transparent
+                                                },
                                                 RoundedCornerShape(Dimen.padding_20)
                                             )
-                                            .fillMaxWidth()
                                             .height(200.dp)
+                                            .width(128.dp)
                                             .clip(RoundedCornerShape(Dimen.padding_20))
                                             .clickable {
                                                 isCameraOpened = true
@@ -293,14 +304,17 @@ fun CreateCollectionScreen(
                                     ) {
                                         Image(
                                             painter = rememberAsyncImagePainter(
-                                                if (uris.contains(item.id)) uris[item.id] else ""
+                                                if (isPhotoTaken) uris[item.id] else ""
                                             ),
                                             contentDescription = null,
                                             modifier = Modifier.clip(
                                                 RoundedCornerShape(Dimen.padding_20)
-                                            )
+                                            ),
+                                            contentScale = ContentScale.FillHeight,
                                         )
-                                        Icon(Icons.Filled.Add, contentDescription = null)
+                                        if (!isPhotoTaken) {
+                                            Icon(Icons.Filled.Add, contentDescription = null)
+                                        }
                                     }
                                     Text(
                                         text = item.nameEn ?: item.nameRu ?: item.nameKor ?: "",
@@ -312,12 +326,15 @@ fun CreateCollectionScreen(
                     }
                     Button(
                         onClick = { onCreateClick(uris, title, id) },
-                        enabled = id != 0L && title.isNotEmpty(),
+                        enabled = isAddImageVisible,
                         modifier = Modifier
-                            .padding(horizontal = Dimen.padding_20)
+                            .padding(bottom = Dimen.padding_8)
                             .align(Alignment.BottomCenter)
                     ) {
-                        Text(text = string(id = R.string.button_create_collection))
+                        Text(
+                            text = string(id = R.string.button_create_collection),
+                            color = Color.White
+                        )
                     }
                 }
             }

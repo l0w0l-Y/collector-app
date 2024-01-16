@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 data class CollectionItem(
     @SerialName("id")
     val id: Long,
-    @SerialName("name")
-    val name: String,
+    @SerialName("memberName")
+    val memberName: String,
     @SerialName("description")
     val description: String?,
     @SerialName("link")

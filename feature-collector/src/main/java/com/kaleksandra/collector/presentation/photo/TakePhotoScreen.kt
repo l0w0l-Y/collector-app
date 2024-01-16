@@ -17,6 +17,7 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,8 +25,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.rounded.Circle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -38,12 +41,15 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.kaleksandra.collector.R
 import com.kaleksandra.coretheme.Dimen
+import com.kaleksandra.coreui.compose.string
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -79,7 +85,6 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 10f), 0f)
         )
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
         Box(
@@ -95,9 +100,19 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
                 }
                 .align(Alignment.Center),
         ) {}
-        IconButton(modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .padding(16.dp),
+        Text(
+            text = string(id = R.string.title_take_photo),
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White,
+            modifier = Modifier
+                .padding(top = 100.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp),
             onClick = {
                 val executor: Executor = ContextCompat.getMainExecutor(context)
                 val photoFile = createImageFile(context)
@@ -111,7 +126,6 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
                             //TODO: Update on error
                         }
 
-                        //TODO: Update rotation and size
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                             val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
                             val croppedBitmap: Bitmap =
@@ -143,9 +157,9 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
             }
         ) {
             Icon(
-                imageVector = Icons.Outlined.PhotoCamera,
+                imageVector = Icons.Rounded.Circle,
                 contentDescription = "",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = Color.White,
                 modifier = Modifier.size(54.dp)
             )
         }
@@ -182,7 +196,7 @@ private fun createImageFile(context: Context): File {
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())
     val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile(
-        "bang_chan_${timeStamp}.jpg",
+        timeStamp,
         ".jpg",
         storageDir
     )
