@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,6 +67,7 @@ import com.kaleksandra.collector.presentation.collection.model.Success
 import com.kaleksandra.coredata.network.models.CollectionItem
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.corenavigation.CreateCollectionDirection
+import com.kaleksandra.corenavigation.ProfileDirection
 import com.kaleksandra.corenavigation.navigate
 import com.kaleksandra.coretheme.Dimen
 import com.kaleksandra.coreui.compose.painter
@@ -83,6 +85,7 @@ fun CollectionScreen(
         {},
         viewModel::onAddCardInCollection,
         { navController.navigate(CreateCollectionDirection) },
+        { navController.navigate(ProfileDirection) }
     )
 }
 
@@ -94,6 +97,7 @@ fun CollectionScreen(
     onCardClick: (Long) -> Unit,
     onAddCardInCollection: (Long) -> Unit,
     onAddCollection: () -> Unit,
+    onOpenProfileClick: () -> Unit,
 ) {
     var selectedCollection by remember { mutableIntStateOf(0) }
     when (loadingState) {
@@ -169,19 +173,38 @@ fun CollectionScreen(
                     }
                 }
             }
-            Column(modifier = Modifier.width(60.dp)) {
+            Column(
+                modifier = Modifier.width(60.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AsyncImage(
+                    model = "http://192.168.15.226:8080/api/collection/image/e9524da128a50166f2f0b35e2a8822fa.jpg",
+                    contentDescription = null,
+                    contentScale = ContentScale.FillHeight,
+                    modifier = Modifier
+                        .padding(top = Dimen.padding_8)
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(Dimen.padding_8))
+                        .clickable { onOpenProfileClick() },
+                )
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(Dimen.padding_16),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(Dimen.padding_6),
+                    verticalArrangement = Arrangement.spacedBy(Dimen.padding_4),
                 ) {
                     items(collections) {
-                        Column(modifier = Modifier
-                            .clickable {
-                                selectedCollection = collections.indexOf(it)
-                            }
-                            .padding(
-                                vertical = Dimen.padding_12, horizontal = Dimen.padding_8
-                            )) {
+                        Column(
+                            modifier = Modifier
+                                .clickable {
+                                    selectedCollection = collections.indexOf(it)
+                                }
+                                .fillMaxWidth()
+                                .padding(
+                                    vertical = Dimen.padding_12,
+                                    horizontal = Dimen.padding_8
+                                )
+                        ) {
                             Text(
                                 text = it.title, style = MaterialTheme.typography.labelMedium
                             )
@@ -193,7 +216,10 @@ fun CollectionScreen(
                     }
                 }
                 IconButton(
-                    onClick = onAddCollection, modifier = Modifier.fillMaxWidth()
+                    onClick = onAddCollection,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Dimen.padding_4)
                 ) {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                 }

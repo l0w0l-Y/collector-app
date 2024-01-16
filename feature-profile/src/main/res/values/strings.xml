@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_log_out">Выйти из аккаунта</string>
+    <string name="title_mail">Почта</string>
+</resources>
