@@ -1,4 +1,4 @@
-package com.kaleksandra.corecommon.ext
+package com.kaleksandra.corecommon.ext.event
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable

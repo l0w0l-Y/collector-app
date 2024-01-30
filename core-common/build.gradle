@@ -5,6 +5,10 @@ plugins {
     id 'kotlin-kapt'
 }
 
+android {
+    namespace 'com.kaleksandra.corecommon'
+}
+
 dependencies {
     implementation(core)
     implementation(composeRuntime)
@@ -15,8 +19,4 @@ dependencies {
     implementation(hiltDep)
     kapt(hiltKapt)
     implementation(hiltNavigation)
-}
-
-android {
-    namespace 'com.kaleksandra.corecommon'
 }

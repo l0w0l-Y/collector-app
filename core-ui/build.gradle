@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+android {
+    namespace 'com.kaleksandra.coreui'
+}
+
 dependencies {
     implementation project(":core-theme")
     implementation(core)
@@ -13,8 +17,4 @@ dependencies {
     debugImplementation(composeTooling)
 
     implementation(material3)
-}
-
-android {
-    namespace 'com.kaleksandra.coreui'
 }

@@ -29,5 +29,6 @@ dependencies {
     kapt(hiltKapt)
 
     implementation(serialization)
+    implementation(serializationCore)
     implementation(dataStore)
 }

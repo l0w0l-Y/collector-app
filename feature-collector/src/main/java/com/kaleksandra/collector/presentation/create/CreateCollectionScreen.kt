@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Chip
@@ -59,9 +59,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.kaleksandra.collector.R
+import com.kaleksandra.collector.domain.models.Group
+import com.kaleksandra.collector.domain.models.Member
 import com.kaleksandra.collector.presentation.create.model.OnCreateCollectionEvent
 import com.kaleksandra.collector.presentation.photo.CameraScreen
-import com.kaleksandra.corecommon.ext.observe
+import com.kaleksandra.corecommon.ext.event.observe
 import com.kaleksandra.coredata.network.models.GroupResponse
 import com.kaleksandra.coredata.network.models.MemberResponse
 import com.kaleksandra.corenavigation.CollectionDirection
@@ -96,11 +98,11 @@ fun CreateCollectionScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateCollectionScreen(
-    groups: List<GroupResponse>,
-    members: List<MemberResponse>,
+    groups: List<Group>,
+    members: List<Member>,
     onGroupSelect: (Long) -> Unit,
     onCreateClick: (Map<Long, Uri>, String, Long) -> Unit,
     onGroupChange: (String) -> Unit,
@@ -276,7 +278,7 @@ fun CreateCollectionScreen(
                                 bottom = Dimen.padding_60
                             )
                         ) {
-                            itemsIndexed(members) { index, item ->
+                            items(members) { item ->
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.spacedBy(Dimen.padding_8),

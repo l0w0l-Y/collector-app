@@ -10,9 +10,9 @@ data class CollectionResponse(
     @SerialName("title")
     val title: String,
     @SerialName("list")
-    val list: List<CollectionItem>,
+    val list: List<CollectionItemResponse>,
     @SerialName("cards")
     val cards: Int,
-    @SerialName("cardInCollection")
-    val cardInCollection: Int,
+    @SerialName("cardsInCollection")
+    val cardsInCollection: Int,
 )

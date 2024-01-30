@@ -3,14 +3,14 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+android {
+    namespace 'com.kaleksandra.coretheme'
+}
+
 dependencies {
     implementation(core)
     implementation(composeUi)
     implementation(composePreview)
 
     implementation(material3)
-}
-
-android {
-    namespace 'com.kaleksandra.coretheme'
 }

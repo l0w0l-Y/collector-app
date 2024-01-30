@@ -1,7 +1,6 @@
 package com.kaleksandra.collector.presentation.photo
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.rounded.Circle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,15 +46,18 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.kaleksandra.collector.R
+import com.kaleksandra.corecommon.ext.date.DateFormat
+import com.kaleksandra.corecommon.ext.dimensions.toPx
 import com.kaleksandra.coretheme.Dimen
 import com.kaleksandra.coreui.compose.string
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.concurrent.Executor
-import kotlin.math.roundToInt
 
+private const val IMAGE_FORMAT_SUFFIX = ".jpg"
+private const val DEFAULT_IMAGE_WIDTH = 412.5f
+private const val DEFAULT_IMAGE_HEIGHT = 636f
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -68,7 +69,7 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
     LaunchedEffect(Unit) {
         permissionState.launchMultiplePermissionRequest()
         if (!permissionState.allPermissionsGranted) {
-            Toast.makeText(context, "Нет доступа к камере", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.permissions_no_camera, Toast.LENGTH_SHORT).show()
         }
     }
     val previewView: PreviewView = remember { PreviewView(context) }
@@ -112,47 +113,12 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
         IconButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp),
+                .padding(Dimen.padding_16),
             onClick = {
-                val executor: Executor = ContextCompat.getMainExecutor(context)
-                val photoFile = createImageFile(context)
-                val outputFileOptions =
-                    ImageCapture.OutputFileOptions.Builder(photoFile).build()
-                cameraController.takePicture(
-                    outputFileOptions,
-                    executor,
-                    object : ImageCapture.OnImageSavedCallback {
-                        override fun onError(error: ImageCaptureException) {
-                            //TODO: Update on error
-                        }
-
-                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-                            val croppedBitmap: Bitmap =
-                                cropCenter(bitmap, 636f.toPx(context), 412.5f.toPx(context))
-                            val matrix = Matrix()
-                            matrix.postRotate(1f * 90)
-                            val rotatedBitmap = Bitmap.createBitmap(
-                                croppedBitmap,
-                                0,
-                                0,
-                                croppedBitmap.width,
-                                croppedBitmap.height,
-                                matrix,
-                                true
-                            )
-                            try {
-                                val fos = FileOutputStream(photoFile)
-                                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                                fos.flush()
-                                fos.close()
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                            }
-                            val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
-                            onImageSaved(savedUri)
-                        }
-                    }
+                takePhoto(
+                    context,
+                    cameraController,
+                    onImageSaved
                 )
             }
         ) {
@@ -166,7 +132,56 @@ fun CameraScreen(onImageSaved: (Uri) -> Unit) {
     }
 }
 
-fun cropCenter(source: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
+private fun takePhoto(
+    context: Context,
+    cameraController: LifecycleCameraController,
+    onImageSaved: (Uri) -> Unit,
+    width: Float = DEFAULT_IMAGE_WIDTH,
+    height: Float = DEFAULT_IMAGE_HEIGHT,
+) {
+    val executor: Executor = ContextCompat.getMainExecutor(context)
+    val photoFile = createImageFile(context)
+    val outputFileOptions =
+        ImageCapture.OutputFileOptions.Builder(photoFile).build()
+    cameraController.takePicture(
+        outputFileOptions,
+        executor,
+        object : ImageCapture.OnImageSavedCallback {
+            override fun onError(error: ImageCaptureException) {
+                //TODO: Update on error
+            }
+
+            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+                val croppedBitmap: Bitmap =
+                    cropCenter(bitmap, height.toPx(), width.toPx())
+                val matrix = Matrix()
+                matrix.postRotate(1f * 90)
+                val rotatedBitmap = Bitmap.createBitmap(
+                    croppedBitmap,
+                    0,
+                    0,
+                    croppedBitmap.width,
+                    croppedBitmap.height,
+                    matrix,
+                    true
+                )
+                try {
+                    val fos = FileOutputStream(photoFile)
+                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    fos.flush()
+                    fos.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
+                onImageSaved(savedUri)
+            }
+        }
+    )
+}
+
+private fun cropCenter(source: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
     val x = (source.width - newWidth) / 2
     val y = (source.height - newHeight) / 2
     if (x < 0 || y < 0) {
@@ -184,20 +199,13 @@ fun cropCenter(source: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
     return croppedBitmap
 }
 
-fun Float.toPx(context: Context): Int {
-    val resources = context.resources
-    val metrics = resources.displayMetrics
-    val px = this * (metrics.densityDpi / 160f)
-    return px.roundToInt()
-}
-
-@SuppressLint("SimpleDateFormat")
 private fun createImageFile(context: Context): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())
+    val timeStamp =
+        DateFormat.IMAGE_DATE_TIME_FORMAT.toDateFormat(value = System.currentTimeMillis()) ?: ""
     val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile(
         timeStamp,
-        ".jpg",
+        IMAGE_FORMAT_SUFFIX,
         storageDir
     )
 }

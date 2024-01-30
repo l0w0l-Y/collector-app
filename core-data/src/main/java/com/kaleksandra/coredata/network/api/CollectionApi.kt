@@ -1,7 +1,7 @@
 package com.kaleksandra.coredata.network.api
 
-import com.kaleksandra.coredata.network.models.CardCollectionDto
-import com.kaleksandra.coredata.network.models.CollectionDto
+import com.kaleksandra.coredata.network.models.CardCollectionRequest
+import com.kaleksandra.coredata.network.models.CollectionRequest
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
 import com.kaleksandra.coredata.network.models.MemberResponse
@@ -25,8 +25,8 @@ interface CollectionApi {
     @POST("collection/card/{cardId}")
     suspend fun addCardInCollection(@Path("cardId") cardId: Long): Response<Unit>
 
-    @POST("collection/")
-    suspend fun createCollection(@Body collection: CollectionDto): Response<Long>
+    @POST("collection")
+    suspend fun createCollection(@Body collection: CollectionRequest): Response<Long>
 
     @GET("collection/groups")
     suspend fun getAllGroups(@Query("query") query: String): Response<List<GroupResponse>>
@@ -42,5 +42,5 @@ interface CollectionApi {
     ): Response<Long>
 
     @POST("collection/card")
-    suspend fun setCardCollection(@Body cardCollection: CardCollectionDto) : Response<Unit>
+    suspend fun setCardCollection(@Body cardCollection: CardCollectionRequest) : Response<Unit>
 }

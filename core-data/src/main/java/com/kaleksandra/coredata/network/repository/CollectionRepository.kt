@@ -5,8 +5,8 @@ import com.kaleksandra.coredata.network.Effect
 import com.kaleksandra.coredata.network.api.CollectionApi
 import com.kaleksandra.coredata.network.call
 import com.kaleksandra.coredata.network.di.IoDispatcher
-import com.kaleksandra.coredata.network.models.CardCollectionDto
-import com.kaleksandra.coredata.network.models.CollectionDto
+import com.kaleksandra.coredata.network.models.CardCollectionRequest
+import com.kaleksandra.coredata.network.models.CollectionRequest
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.coredata.network.models.GroupResponse
 import com.kaleksandra.coredata.network.models.MemberResponse
@@ -18,15 +18,17 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
+private const val MULTIPART_FORMAT: String = "multipart/form-data"
+private const val MULTIPART_NAME: String = "image"
 interface CollectionRepository {
     suspend fun getCollection(id: Long): Effect<CollectionResponse>
     suspend fun getAllCollection(): Effect<List<CollectionResponse>>
     suspend fun addCardInCollection(cardId: Long): Effect<Completable>
-    suspend fun createCollection(collection: CollectionDto): Effect<Long>
+    suspend fun createCollection(collection: CollectionRequest): Effect<Long>
     suspend fun getGroups(query: String): Effect<List<GroupResponse>>
     suspend fun getAllMembersGroup(id: Long): Effect<List<MemberResponse>>
     suspend fun uploadImage(file: File, id: Long): Effect<Long>
-    suspend fun setCardCollection(cardCollectionDto: CardCollectionDto): Effect<Unit>
+    suspend fun setCardCollection(cardCollectionDto: CardCollectionRequest): Effect<Unit>
 }
 
 class CollectionRepositoryImpl @Inject constructor(
@@ -45,7 +47,7 @@ class CollectionRepositoryImpl @Inject constructor(
         return call(dispatcher) { api.addCardInCollection(cardId) }.toCompletable()
     }
 
-    override suspend fun createCollection(collection: CollectionDto): Effect<Long> {
+    override suspend fun createCollection(collection: CollectionRequest): Effect<Long> {
         return call(dispatcher) { api.createCollection(collection) }
     }
 
@@ -59,14 +61,14 @@ class CollectionRepositoryImpl @Inject constructor(
 
     override suspend fun uploadImage(file: File, id: Long): Effect<Long> {
         val multipartBody = MultipartBody.Part.createFormData(
-            "image",
+            MULTIPART_NAME,
             file.name,
-            file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            file.asRequestBody(MULTIPART_FORMAT.toMediaTypeOrNull())
         )
         return call(dispatcher) { api.uploadImage(multipartBody, id) }
     }
 
-    override suspend fun setCardCollection(cardCollectionDto: CardCollectionDto): Effect<Unit> {
+    override suspend fun setCardCollection(cardCollectionDto: CardCollectionRequest): Effect<Unit> {
         return call(dispatcher) { api.setCardCollection(cardCollectionDto) }
     }
 }

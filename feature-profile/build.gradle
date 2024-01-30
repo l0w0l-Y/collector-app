@@ -4,6 +4,10 @@ plugins {
     id 'kotlin-kapt'
 }
 
+android {
+    namespace 'com.kaleksandra.featureprofile'
+}
+
 dependencies {
     implementation project(":core-theme")
     implementation project(":core-common")
@@ -28,11 +32,7 @@ dependencies {
     kapt(hiltKapt)
 
     implementation(dataStore)
-    implementation("androidx.compose.material:material:1.5.4")
-    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+    implementation(material)
+    implementation(permissions)
     implementation(coil)
-}
-
-android {
-    namespace 'com.kaleksandra.featureprofile'
 }

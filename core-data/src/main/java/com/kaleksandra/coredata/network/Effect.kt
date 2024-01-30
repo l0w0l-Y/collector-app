@@ -52,7 +52,7 @@ suspend fun <T> Effect<T>.flatmap(call: suspend (T?) -> Unit) = this.apply {
     this.doOnSuccess { call(it) }
 }
 
-suspend fun <Prev, New> Effect<Prev>.map(call: suspend (Prev?) -> New): Effect<New> {
+suspend fun <Prev, New> Effect<Prev>.map(call: suspend (Prev) -> New): Effect<New> {
     return when (this) {
         is Error -> Error(this.exception)
         is Success -> Success(call(this.data))

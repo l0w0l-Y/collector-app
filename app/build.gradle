@@ -7,7 +7,7 @@ plugins {
 
 android {
     defaultConfig {
-        applicationId "com.kaleksandra.composetemplate"
+        applicationId "com.kaleksandra.collector"
         versionCode 1
         versionName "1.0.0"
     }
@@ -36,7 +36,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    namespace 'com.kaleksandra.composetemplate'
+    namespace 'com.kaleksandra.collector'
 }
 
 dependencies {
@@ -59,5 +59,5 @@ dependencies {
     implementation(hiltNavigation)
 
     implementation(dataStore)
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation(uiController)
 }

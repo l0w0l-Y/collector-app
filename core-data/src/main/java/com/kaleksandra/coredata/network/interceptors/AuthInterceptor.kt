@@ -11,7 +11,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
-private const val prefixToken: String = "Bearer"
+private const val PREFIX_TOKEN: String = "Bearer"
+private const val AUTHORIZATION_HEADER: String = "Authorization"
 
 class AuthInterceptor @Inject constructor(
     dataStore: DataStoreProvider,
@@ -29,7 +30,7 @@ class AuthInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .addHeader("Authorization", "$prefixToken $token")
+            .addHeader(AUTHORIZATION_HEADER, "$PREFIX_TOKEN $token")
             .build()
         return chain.proceed(request)
     }

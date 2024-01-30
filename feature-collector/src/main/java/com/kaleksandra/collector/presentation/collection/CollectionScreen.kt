@@ -60,11 +60,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.kaleksandra.collector.R
+import com.kaleksandra.collector.domain.models.CollectionModel
 import com.kaleksandra.collector.presentation.collection.model.Error
 import com.kaleksandra.collector.presentation.collection.model.Loading
 import com.kaleksandra.collector.presentation.collection.model.LoadingState
 import com.kaleksandra.collector.presentation.collection.model.Success
-import com.kaleksandra.coredata.network.models.CollectionItem
+import com.kaleksandra.coredata.network.models.CollectionItemResponse
 import com.kaleksandra.coredata.network.models.CollectionResponse
 import com.kaleksandra.corenavigation.CreateCollectionDirection
 import com.kaleksandra.corenavigation.ProfileDirection
@@ -82,7 +83,7 @@ fun CollectionScreen(
     CollectionScreen(
         collections,
         loadingState,
-        {},
+        {/* TODO: Add open card functional */ },
         viewModel::onAddCardInCollection,
         { navController.navigate(CreateCollectionDirection) },
         { navController.navigate(ProfileDirection) }
@@ -92,7 +93,7 @@ fun CollectionScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CollectionScreen(
-    collections: List<CollectionResponse>,
+    collections: List<CollectionModel>,
     loadingState: LoadingState,
     onCardClick: (Long) -> Unit,
     onAddCardInCollection: (Long) -> Unit,
@@ -131,7 +132,8 @@ fun CollectionScreen(
                                     contentScale = ContentScale.FillWidth,
                                     colorFilter = if (!it.inCollection) {
                                         ColorFilter.tint(
-                                            color = Color(0xBF06010B), blendMode = BlendMode.Darken
+                                            color = Color(0xBF06010B),
+                                            blendMode = BlendMode.Darken
                                         )
                                     } else {
                                         null
@@ -209,7 +211,7 @@ fun CollectionScreen(
                                 text = it.title, style = MaterialTheme.typography.labelMedium
                             )
                             Text(
-                                text = "${it.cardInCollection} / ${it.cards}",
+                                text = "${it.cardsInCollection} / ${it.cards}",
                                 style = MaterialTheme.typography.labelMedium
                             )
                         }
@@ -271,9 +273,8 @@ fun LoadingAnimation(modifier: Modifier = Modifier, speed: Int = 600, height: Dp
 fun CollectionPreview() {
     val collection = CollectionResponse(
         1, "Nacific 2022", listOf(
-            CollectionItem(1, "Banchan", null, "", false),
-            CollectionItem(2, "Chanbin", null, "", false),
+            CollectionItemResponse(1, "Banchan", null, "", false),
+            CollectionItemResponse(2, "Chanbin", null, "", false),
         ), 4, 6
     )
-    //CollectionScreen(collection, {})
 }

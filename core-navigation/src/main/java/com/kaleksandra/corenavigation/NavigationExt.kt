@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import com.google.gson.Gson
 
-//TODO: UPDATE ALL NAVIGATION
 //TODO: UPDATE NAVIGATION WITH ARGS
 
 fun NavController.navigate(direction: Direction, builder: (NavOptionsBuilder.() -> Unit) = {}) {

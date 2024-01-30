@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+android {
+    namespace 'com.kaleksandra.corenavigation'
+}
+
 dependencies {
     implementation project(":core-theme")
 
@@ -17,8 +21,4 @@ dependencies {
     debugImplementation(composeTooling)
 
     implementation(gson)
-}
-
-android {
-    namespace 'com.kaleksandra.corenavigation'
 }

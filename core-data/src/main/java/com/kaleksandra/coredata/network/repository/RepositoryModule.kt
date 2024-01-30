@@ -11,9 +11,9 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 interface RepositoryModule {
     @Binds
-    @ViewModelScoped
+    @Singleton
     fun provideCollectionRepository(impl: CollectionRepositoryImpl): CollectionRepository
 }

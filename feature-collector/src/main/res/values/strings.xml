@@ -7,4 +7,5 @@
     <string name="text_field_placeholder_group">BTS</string>
     <string name="top_bar_create_collection">Новая коллекция</string>
     <string name="title_take_photo">Наведите камеру на карту и сделайте снимок</string>
+    <string name="permissions_no_camera">Нет доступа к камере</string>
 </resources>
